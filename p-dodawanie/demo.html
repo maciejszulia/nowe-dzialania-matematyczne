@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>p-dodawanie: demo</title>
+<style>
+:root{--bg:#f9f9f7;--card:#ffffff;--text:#0b0b0b;--text2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,0.14);--series:#2a78d6;--tint:#e6f1fb;--danger:#a32d2d}
+@media (prefers-color-scheme: dark){:root{--bg:#0d0d0d;--card:#1a1a19;--text:#f0efec;--text2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,0.16);--series:#3987e5;--tint:#0c2f52;--danger:#f09595}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","DejaVu Sans",sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+h2{font-size:18px;font-weight:600;margin:32px 0 8px}
+p{margin:0 0 12px}
+.lead{color:var(--text2)}
+.formula{font-family:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;font-size:15px;white-space:nowrap;overflow-x:auto}
+.row{display:flex;align-items:center;gap:12px}
+.row label{font-size:14px;color:var(--text2);min-width:12px}
+.row input[type=range]{flex:1;accent-color:var(--series)}
+.row span{font-size:14px;font-weight:600;min-width:44px;text-align:right;font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 24px;margin-bottom:12px}
+.presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0 16px}
+button,select,input[type=number]{font:inherit;font-size:14px;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+button{cursor:pointer}
+button:hover{border-color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.card p{margin:0;font-variant-numeric:tabular-nums}
+.card .k{font-size:13px;color:var(--text2)}
+.card .v{font-size:22px;font-weight:600}
+.chart{position:relative;width:100%;cursor:crosshair}
+.chart svg{display:block;width:100%}
+.tip{position:absolute;top:0;left:0;display:none;pointer-events:none;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+svg text{font-size:11px;font-family:inherit;fill:var(--muted)}
+svg .lab{fill:var(--text2);paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+svg .g{stroke:var(--grid);stroke-width:1}
+svg .ax{stroke:var(--axis);stroke-width:1}
+svg .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:6 4}
+svg .guide{stroke:var(--text2);stroke-width:1;stroke-dasharray:3 3}
+svg .curve{fill:none;stroke:var(--series);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .dot{fill:var(--series);stroke:var(--bg);stroke-width:2}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;align-items:end;margin-bottom:12px}
+.calc label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px}
+.calc select,.calc input{width:100%}
+.err{color:var(--danger);font-size:13px;min-height:20px;margin:0 0 4px}
+.note{font-size:13px;color:var(--text2)}
+</style>
+</head>
+<body>
+<main>
+<h1>p-dodawanie: demo</h1>
+<p class="lead">Jedno działanie z parametrem p. Liczby a i b są dodatnie i mają tę samą jednostkę.</p>
+<p class="formula">a ⊕ₚ b = (a^p + b^p)^(1/p)</p>
+
+<h2>1. Wynik w funkcji parametru p</h2>
+<div class="grid2">
+<div class="row"><label for="sa">a</label><input type="range" id="sa" min="1" max="10" step="0.5" value="3"><span id="oa">3</span></div>
+<div class="row"><label for="sb">b</label><input type="range" id="sb" min="1" max="10" step="0.5" value="4"><span id="ob">4</span></div>
+</div>
+<div class="row"><label for="sp">p</label><input type="range" id="sp" min="-10" max="10" step="0.1" value="2"><span id="op">2,0</span></div>
+<div class="presets">
+<button data-p="-2">p = −2 · Kv szeregowo</button>
+<button data-p="-1">p = −1 · R równolegle</button>
+<button data-p="1">p = 1 · suma</button>
+<button data-p="2">p = 2 · niepewności</button>
+</div>
+<div class="cards">
+<div class="card"><p class="k">Wynik a ⊕ₚ b</p><p class="v" id="res">5,000</p></div>
+<div class="card"><p class="k">min(a, b)</p><p class="v" id="vmin">3</p></div>
+<div class="card"><p class="k">max(a, b)</p><p class="v" id="vmax">4</p></div>
+</div>
+<p class="formula" id="fline">(3^2 + 4^2)^(1/2) = 5,000</p>
+<div class="chart" id="w1"><svg id="c1" role="img" aria-label="Wykres wyniku a ⊕ₚ b w funkcji p." height="320"></svg><div class="tip" id="tip"></div></div>
+<p class="note">Kliknij wykres, żeby ustawić p. Dla p = 0 wynik nie istnieje, bo wykładnik 1/p nie ma wartości.</p>
+
+<h2>2. Izolinia przez punkt (a, b)</h2>
+<p class="lead">Krzywa łączy punkty (x, y), dla których x ⊕ₚ y = a ⊕ₚ b. Dla p &gt; 0 krzywa przecina każdą oś w punkcie równym wynikowi. Dla p &lt; 0 wynik wyznacza 2 asymptoty krzywej.</p>
+<div class="chart" id="w2" style="max-width:440px;cursor:default"><svg id="c2" role="img" aria-label="Izolinia p-dodawania przez punkt (a, b)."></svg></div>
+
+<h2>3. Kalkulator zastosowań</h2>
+<div class="calc">
+<div style="grid-column:1/-1"><label for="app">Zastosowanie</label><select id="app"></select></div>
+<div><label for="x1" id="l1">Wartość 1</label><input type="number" id="x1" min="0" step="any" inputmode="decimal"></div>
+<div><label for="x2" id="l2">Wartość 2</label><input type="number" id="x2" min="0" step="any" inputmode="decimal"></div>
+</div>
+<p class="err" id="err" role="alert"></p>
+<div class="cards">
+<div class="card"><p class="k">Parametr p</p><p class="v" id="cp">−1</p></div>
+<div class="card" style="grid-column:span 2"><p class="k" id="ck">Wynik</p><p class="v" id="cv">2 Ω</p></div>
+</div>
+<p class="formula" id="cf"></p>
+<p class="note" id="cn"></p>
+</main>
+<script>
+(function(){
+'use strict';
+const $=function(id){return document.getElementById(id);};
+const f=function(a,b,p){return Math.pow(Math.pow(a,p)+Math.pow(b,p),1/p);};
+const minus=function(s){return s.replace('-','−');};
+const nf=function(v,d){return minus(v.toLocaleString('pl-PL',{minimumFractionDigits:d,maximumFractionDigits:d}));};
+const nx=function(v,d){return minus(v.toLocaleString('pl-PL',{maximumFractionDigits:d===undefined?2:d}));};
+const fv=function(v){if(!isFinite(v))return '∞';if(v>=1e6){const e=Math.floor(Math.log10(v));return nf(v/Math.pow(10,e),2)+'·10^'+e;}return nf(v,3);};
+const nice=function(raw){const st=[0.5,1,2,5,10,20,50].find(function(s){return raw/s<=6;});return {st:st,max:Math.ceil(raw/st)*st};};
+const A=$('sa'),B=$('sb'),P=$('sp'),w1=$('w1'),c1=$('c1'),w2=$('w2'),c2=$('c2'),tip=$('tip');
+let G=null;
+
+function draw1(a,b,p){
+const W=w1.clientWidth||728,H=320,L=40,R=12,T=22,Bm=40,pw=W-L-R,ph=H-T-Bm;
+const sc=nice(1.4*(a+b)),yM=sc.max,st=sc.st;
+const X=function(q){return L+(q+10)/20*pw;},Y=function(v){return T+ph-v/yM*ph;};
+const mn=Math.min(a,b),mx=Math.max(a,b),x0=X(0).toFixed(1),yb=(T+ph).toFixed(1);
+G={a:a,b:b,W:W,L:L,R:R,T:T,pw:pw,yM:yM,Y:Y};
+const seg=function(q0,q1){let d='';for(let x=X(q0);x<=X(q1)+0.01;x+=1){const q=(x-L)/pw*20-10;if(Math.abs(q)<0.02)continue;const v=Math.min(f(a,b,q),yM*4);d+=(d?'L':'M')+x.toFixed(1)+' '+Y(v).toFixed(1);}return d;};
+let s='<defs><clipPath id="k1"><rect x="'+L+'" y="'+T+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs>';
+for(let i=0;i<=Math.round(yM/st);i++){const v=i*st,y=Y(v).toFixed(1);s+='<line class="'+(i===0?'ax':'g')+'" x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'"/><text x="'+(L-8)+'" y="'+(+y+4).toFixed(1)+'" text-anchor="end">'+nf(v,st<1?1:0)+'</text>';}
+[-10,-5,-2,-1,0,1,2,5,10].forEach(function(q){const x=X(q).toFixed(1);s+='<line class="ax" x1="'+x+'" x2="'+x+'" y1="'+yb+'" y2="'+(T+ph+4)+'"/><text x="'+x+'" y="'+(T+ph+18)+'" text-anchor="middle">'+nx(q)+'</text>';});
+s+='<text x="'+(L+pw/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">parametr p</text><text x="'+L+'" y="12">a ⊕ₚ b</text>';
+s+='<line class="ax" stroke-dasharray="4 4" x1="'+x0+'" x2="'+x0+'" y1="'+T+'" y2="'+yb+'"/>';
+let lab='<text class="lab" x="'+(X(0)-6).toFixed(1)+'" y="'+(T+12)+'" text-anchor="end">p = 0: brak wyniku</text>';
+s+='<line class="ref" x1="'+L+'" x2="'+x0+'" y1="'+Y(mn).toFixed(1)+'" y2="'+Y(mn).toFixed(1)+'"/>';
+lab+='<text class="lab" x="'+(L+4)+'" y="'+(Y(mn)-6).toFixed(1)+'">min(a, b) = '+nx(mn)+'</text>';
+s+='<line class="ref" x1="'+x0+'" x2="'+(W-R)+'" y1="'+Y(mx).toFixed(1)+'" y2="'+Y(mx).toFixed(1)+'"/>';
+lab+='<text class="lab" x="'+(W-R-4)+'" y="'+(Y(mx)+14).toFixed(1)+'" text-anchor="end">max(a, b) = '+nx(mx)+'</text>';
+[-2,-1,1,2].forEach(function(q){const x=X(q).toFixed(1);s+='<line class="ax" stroke-dasharray="2 3" x1="'+x+'" x2="'+x+'" y1="'+Y(f(a,b,q)).toFixed(1)+'" y2="'+yb+'"/>';});
+s+='<g clip-path="url(#k1)"><path class="curve" d="'+seg(-10,-0.02)+'"/><path class="curve" d="'+seg(0.02,10)+'"/></g>';
+[-2,-1,1,2].forEach(function(q){s+='<circle class="dot" r="4" cx="'+X(q).toFixed(1)+'" cy="'+Y(f(a,b,q)).toFixed(1)+'"/>';});
+if(p!==0){const val=f(a,b,p),x=X(p).toFixed(1);
+if(val<=yM){const y=Y(val).toFixed(1);s+='<line class="guide" x1="'+x+'" x2="'+x+'" y1="'+y+'" y2="'+yb+'"/><line class="guide" x1="'+L+'" x2="'+x+'" y1="'+y+'" y2="'+y+'"/><circle class="dot" r="6" cx="'+x+'" cy="'+y+'"/>';}
+else{s+='<line class="guide" x1="'+x+'" x2="'+x+'" y1="'+T+'" y2="'+yb+'"/>';lab+='<text class="lab" x="'+(X(0)-6).toFixed(1)+'" y="'+(T+28)+'" text-anchor="end">wynik poza skalą</text>';}}
+s+=lab+'<line id="hl" class="ax" y1="'+T+'" y2="'+yb+'" visibility="hidden"/><circle id="hd" class="dot" r="4" visibility="hidden"/>';
+c1.setAttribute('viewBox','0 0 '+W+' '+H);c1.innerHTML=s;
+c1.setAttribute('aria-label','Wykres wyniku a ⊕ₚ b w funkcji p dla a = '+nx(a)+' i b = '+nx(b)+'. '+(p===0?'Dla p = 0 wynik nie istnieje.':'Dla p = '+nf(p,1)+' wynik wynosi '+fv(f(a,b,p))+'.'));
+}
+
+function draw2(a,b,p){
+const W=Math.min(w2.clientWidth||440,440),H=W,L=40,R=12,T=14,Bm=36,pw=W-L-R,ph=H-T-Bm;
+const sc=nice(1.4*(a+b)),M=sc.max,st=sc.st;
+const X=function(v){return L+v/M*pw;},Y=function(v){return T+ph-v/M*ph;};
+let s='<defs><clipPath id="k2"><rect x="'+L+'" y="'+T+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs>';
+for(let i=0;i<=Math.round(M/st);i++){const v=i*st,x=X(v).toFixed(1),y=Y(v).toFixed(1);
+s+='<line class="'+(i===0?'ax':'g')+'" x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'"/><line class="'+(i===0?'ax':'g')+'" x1="'+x+'" x2="'+x+'" y1="'+T+'" y2="'+(T+ph)+'"/>';
+s+='<text x="'+(L-8)+'" y="'+(+y+4).toFixed(1)+'" text-anchor="end">'+nf(v,st<1?1:0)+'</text>';if(i>0)s+='<text x="'+x+'" y="'+(T+ph+16)+'" text-anchor="middle">'+nf(v,st<1?1:0)+'</text>';}
+s+='<text x="'+(L+pw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">x</text><text x="10" y="'+(T+ph/2).toFixed(1)+'">y</text>';
+let lab='';
+if(p!==0){const c=f(a,b,p);let d='';const N=600;
+for(let i=0;i<=N;i++){let t=i/N;if(p<0)t=0.0005+t*0.999;const x=c*Math.pow(t,1/p),y=c*Math.pow(1-t,1/p);if(!isFinite(x)||!isFinite(y))continue;d+=(d?'L':'M')+X(Math.min(x,M*4)).toFixed(1)+' '+Y(Math.min(y,M*4)).toFixed(1);}
+if(p<0&&c<=M){s+='<line class="ref" x1="'+X(c).toFixed(1)+'" x2="'+X(c).toFixed(1)+'" y1="'+T+'" y2="'+(T+ph)+'"/><line class="ref" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(c).toFixed(1)+'" y2="'+Y(c).toFixed(1)+'"/>';
+lab+='<text class="lab" x="'+(W-R-4)+'" y="'+(Y(c)+14).toFixed(1)+'" text-anchor="end">asymptota: '+fv(c)+'</text>';}
+s+='<g clip-path="url(#k2)"><path class="curve" d="'+d+'"/></g>';
+if(p>0&&c<=M){s+='<circle class="dot" r="5" cx="'+X(c).toFixed(1)+'" cy="'+Y(0).toFixed(1)+'"/><circle class="dot" r="5" cx="'+X(0).toFixed(1)+'" cy="'+Y(c).toFixed(1)+'"/>';
+lab+='<text class="lab" x="'+(X(c)+8).toFixed(1)+'" y="'+(Y(0)-8).toFixed(1)+'"'+(X(c)>W-110?' text-anchor="end" dx="-16"':'')+'>wynik: '+fv(c)+'</text>';}
+if(p>0&&c>M)lab+='<text class="lab" x="'+(W-R-4)+'" y="'+(T+14)+'" text-anchor="end">wynik poza skalą</text>';}
+else{lab+='<text class="lab" x="'+(W-R-4)+'" y="'+(T+14)+'" text-anchor="end">p = 0: brak wyniku</text>';}
+s+='<line class="guide" x1="'+X(a).toFixed(1)+'" x2="'+X(a).toFixed(1)+'" y1="'+Y(b).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'"/><line class="guide" x1="'+X(0).toFixed(1)+'" x2="'+X(a).toFixed(1)+'" y1="'+Y(b).toFixed(1)+'" y2="'+Y(b).toFixed(1)+'"/>';
+s+='<circle class="dot" r="6" cx="'+X(a).toFixed(1)+'" cy="'+Y(b).toFixed(1)+'"/>';
+lab+='<text class="lab" x="'+(X(a)+10).toFixed(1)+'" y="'+(Y(b)-8).toFixed(1)+'">(a, b) = ('+nx(a)+'; '+nx(b)+')</text>';
+c2.setAttribute('viewBox','0 0 '+W+' '+H);c2.setAttribute('height',H);c2.innerHTML=s+lab;
+c2.setAttribute('aria-label','Izolinia przez punkt ('+nx(a)+'; '+nx(b)+') dla p = '+nf(p,1)+'.');
+}
+
+function update(){
+const a=+A.value,b=+B.value,p=+P.value;
+$('oa').textContent=nx(a);$('ob').textContent=nx(b);$('op').textContent=nf(p,1);
+$('vmin').textContent=nx(Math.min(a,b));$('vmax').textContent=nx(Math.max(a,b));
+if(p===0){$('res').textContent='brak';$('fline').textContent='p = 0: wykładnik 1/p nie ma wartości';}
+else{const v=f(a,b,p),pp=p<0?'('+nx(p)+')':nx(p),ex=(p<0?'−1/':'1/')+nx(Math.abs(p));$('res').textContent=fv(v);$('fline').textContent='('+nx(a)+'^'+pp+' + '+nx(b)+'^'+pp+')^('+ex+') = '+fv(v);}
+draw1(a,b,p);draw2(a,b,p);
+}
+
+function pAt(e){const r=w1.getBoundingClientRect(),x=e.clientX-r.left;if(!G||x<G.L||x>G.W-G.R)return null;return {x:x,y:e.clientY-r.top,p:(x-G.L)/G.pw*20-10};}
+w1.addEventListener('pointermove',function(e){const h=pAt(e),hl=$('hl'),hd=$('hd');if(!h||!hl){tip.style.display='none';return;}
+hl.setAttribute('x1',h.x.toFixed(1));hl.setAttribute('x2',h.x.toFixed(1));hl.setAttribute('visibility','visible');
+if(Math.abs(h.p)<0.05){tip.textContent='p = 0: brak wyniku';hd.setAttribute('visibility','hidden');}
+else{const v=f(G.a,G.b,h.p);tip.textContent='p = '+nf(h.p,2)+' → '+fv(v);if(v<=G.yM){hd.setAttribute('cx',h.x.toFixed(1));hd.setAttribute('cy',G.Y(v).toFixed(1));hd.setAttribute('visibility','visible');}else{hd.setAttribute('visibility','hidden');}}
+tip.style.display='block';const tw=tip.offsetWidth;tip.style.left=Math.round(h.x+12+tw>G.W?h.x-12-tw:h.x+12)+'px';tip.style.top=Math.round(Math.max(G.T,h.y-34))+'px';});
+w1.addEventListener('pointerleave',function(){tip.style.display='none';const hl=$('hl'),hd=$('hd');if(hl){hl.setAttribute('visibility','hidden');hd.setAttribute('visibility','hidden');}});
+w1.addEventListener('click',function(e){const h=pAt(e);if(!h)return;let q=Math.round(h.p*10)/10;if(q===0)q=h.p<0?-0.1:0.1;P.value=Math.max(-10,Math.min(10,q));update();tip.style.display='none';});
+[A,B,P].forEach(function(el){el.addEventListener('input',update);});
+document.querySelectorAll('button[data-p]').forEach(function(bt){bt.addEventListener('click',function(){P.value=bt.dataset.p;update();});});
+if(window.ResizeObserver){new ResizeObserver(update).observe(w1);}
+
+const APPS=[
+{n:'Rezystory połączone równolegle',p:-1,u:'Ω',l:'Rezystancja',a:6,b:3,k:'Rezystancja zastępcza',t:'Sumuje się przewodność 1/R.'},
+{n:'Rezystory połączone szeregowo',p:1,u:'Ω',l:'Rezystancja',a:6,b:3,k:'Rezystancja zastępcza',t:'Sumuje się rezystancja R.'},
+{n:'Zawory połączone szeregowo (Kv)',p:-2,u:'m³/h',l:'Kv zaworu',a:3,b:4,k:'Kv zastępcze',t:'Sumuje się spadek ciśnienia, czyli Kv^(−2). Założenie: ciecz, przepływ bez kawitacji.'},
+{n:'Zawory połączone równolegle (Kv)',p:1,u:'m³/h',l:'Kv zaworu',a:3,b:4,k:'Kv zastępcze',t:'Sumuje się przepływ przy wspólnym spadku ciśnienia.'},
+{n:'Niepewności standardowe wielkości nieskorelowanych',p:2,u:'',l:'Niepewność u',a:3,b:4,k:'Niepewność sumy lub różnicy',t:'Sumuje się wariancja u². Obie niepewności mają tę samą jednostkę.'},
+{n:'Trójkąt prostokątny: przeciwprostokątna',p:2,u:'mm',l:'Przyprostokątna',a:3,b:4,k:'Przeciwprostokątna',t:'Twierdzenie Pitagorasa.'},
+{n:'Trójkąt prostokątny: wysokość na przeciwprostokątną',p:-2,u:'mm',l:'Przyprostokątna',a:3,b:4,k:'Wysokość',t:'Odwrotne twierdzenie Pitagorasa: 1/h² = 1/a² + 1/b².'},
+{n:'2 rury równoległe → 1 rura: równe pole przekroju',p:2,u:'mm',l:'Średnica wewnętrzna',a:20,b:20,k:'Średnica zastępcza',t:'Sumuje się pole przekroju, czyli d². Prędkość średnia zostaje bez zmiany.'},
+{n:'2 rury równoległe → 1 rura: przepływ burzliwy',p:2.5,u:'mm',l:'Średnica wewnętrzna',a:20,b:20,k:'Średnica zastępcza',t:'Równy spadek ciśnienia przy równym przepływie łącznym. Założenia: równa długość rur i równy współczynnik tarcia λ.'},
+{n:'2 rury równoległe → 1 rura: przepływ laminarny',p:4,u:'mm',l:'Średnica wewnętrzna',a:20,b:20,k:'Średnica zastępcza',t:'Prawo Hagena–Poiseuille’a: przepływ jest proporcjonalny do d⁴. Założenie: równa długość rur.'},
+{n:'Czas wspólnej pracy 2 wykonawców',p:-1,u:'h',l:'Czas pracy w pojedynkę',a:5,b:7,k:'Czas pracy razem',t:'Sumuje się tempo pracy 1/T.'},
+{n:'Efektywny okres półtrwania',p:-1,u:'d',l:'Okres półtrwania',a:8,b:21,k:'Efektywny okres półtrwania',t:'Sumuje się stała zaniku ln 2/T: rozpad fizyczny i wydalanie biologiczne.'},
+{n:'Soczewka cienka: ogniskowa z odległości przedmiotu i obrazu',p:-1,u:'mm',l:'Odległość',a:300,b:150,k:'Ogniskowa',t:'Równanie soczewki cienkiej: 1/f = 1/x + 1/y. Wartość 1 to odległość przedmiotu, wartość 2 to odległość obrazu rzeczywistego.'},
+{n:'Sprężyny połączone szeregowo',p:-1,u:'N/mm',l:'Sztywność',a:6,b:3,k:'Sztywność zastępcza',t:'Sumuje się podatność 1/k.'},
+{n:'Połączenie 2 kropli w 1 kroplę',p:3,u:'mm',l:'Promień kropli',a:1,b:1,k:'Promień po połączeniu',t:'Sumuje się objętość, czyli r³.'}
+];
+const sel=$('app'),x1=$('x1'),x2=$('x2');
+APPS.forEach(function(ap,i){const o=document.createElement('option');o.value=i;o.textContent=ap.n+' (p = '+nx(ap.p)+')';sel.appendChild(o);});
+function calc(){
+const ap=APPS[+sel.value],a=parseFloat(x1.value),b=parseFloat(x2.value),u=ap.u?' '+ap.u:'';
+$('l1').textContent=ap.l+' 1'+(ap.u?' ['+ap.u+']':'');$('l2').textContent=ap.l+' 2'+(ap.u?' ['+ap.u+']':'');
+$('cp').textContent=nx(ap.p);$('ck').textContent=ap.k;$('cn').textContent=ap.t;
+if(!(a>0)||!(b>0)||!isFinite(a)||!isFinite(b)){$('err').textContent='Wpisz 2 liczby większe niż 0.';$('cv').textContent='—';$('cf').textContent='';return;}
+$('err').textContent='';
+const v=f(a,b,ap.p),pp=ap.p<0?'('+nx(ap.p)+')':nx(ap.p),ex=(ap.p<0?'−1/':'1/')+nx(Math.abs(ap.p));
+$('cv').textContent=nx(v,3)+u;
+$('cf').textContent='('+nx(a,6)+'^'+pp+' + '+nx(b,6)+'^'+pp+')^('+ex+') = '+nx(v,3)+u;
+}
+sel.addEventListener('change',function(){const ap=APPS[+sel.value];x1.value=ap.a;x2.value=ap.b;calc();});
+x1.addEventListener('input',calc);x2.addEventListener('input',calc);
+x1.value=APPS[0].a;x2.value=APPS[0].b;
+update();calc();
+})();
+</script>
+</body>
+</html>
