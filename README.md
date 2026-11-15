@@ -10,7 +10,7 @@ This repository collects mathematical operations that have applications in physi
 
 ![p-addition of 3 and 4 for 6 values of p. On the branch p < 0 the result stays below 3; on the branch p > 0 it stays above 4.](docs/diagrams/p-dodawanie.svg)
 
-![Result of p-addition of 3 and 4 as a function of p](p-dodawanie/img/wynik-vs-p.svg)
+![For every pair a, b > 0 the surface p = 1 lies above the surface p = 2, and the surface p = −1 lies below both](p-dodawanie/img/powierzchnie-3d.en.svg)
 
 ## Starting point
 

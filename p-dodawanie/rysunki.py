@@ -215,9 +215,44 @@ def rys_srednia(a=3.0, b=4.0):
     zapisz(fig, "srednia-potegowa")
 
 
+TEKSTY_3D = {
+    "pl": (r"Dla każdej pary $a, b > 0$: powierzchnia $p = 1$ leży nad powierzchnią $p = 2$," "\n"
+           r"a powierzchnia $p = -1$ leży pod obiema", "powierzchnie-3d"),
+    "en": (r"For every pair $a, b > 0$: the surface $p = 1$ lies above the surface $p = 2$," "\n"
+           r"and the surface $p = -1$ lies below both", "powierzchnie-3d.en"),
+}
+
+
+def rys_powierzchnie_3d(jezyk: str = "pl"):
+    """Powierzchnie a ⊕p b nad płaszczyzną (a, b) dla p = −1, 1, 2 (W4 i W5 w przestrzeni)."""
+    tytul, plik = TEKSTY_3D[jezyk]
+    os_ab = np.linspace(0.25, 5, 30)
+    A, B = np.meshgrid(os_ab, os_ab)
+    fig = plt.figure(figsize=(7.4, 6.0), layout="constrained")
+    ax = fig.add_subplot(projection="3d")
+    # matplotlib maluje powierzchnie w kolejności wywołań: od dolnej do górnej, bo kamera patrzy z góry
+    warstwy = ((-1, POMARANCZOWY, 0.9), (2, "#8cbcf2", 0.9), (1, "#1b4f91", 0.42))
+    for p, kolor, alfa in warstwy:
+        Z = np.vectorize(lambda x, y: padd(x, y, p=p))(A, B)
+        ax.plot_surface(A, B, Z, color=kolor, alpha=alfa, linewidth=0, antialiased=True, rasterized=True)
+    ax.set_xlabel("a")
+    ax.set_ylabel("b")
+    ax.zaxis.set_rotate_label(False)
+    ax.set_zlabel(r"$a \oplus_{p}\, b$", rotation=0, labelpad=10)
+    ax.view_init(elev=20, azim=-125)
+    uchwyty = [plt.Rectangle((0, 0), 1, 1, color=kolor, alpha=alfa) for _, kolor, alfa in reversed(warstwy)]
+    leg = ax.legend(uchwyty, [f"p = {pl(p)}" for p, _, _ in reversed(warstwy)], loc="upper left", frameon=True,
+                    facecolor=TLO, edgecolor=SIATKA, fontsize=9, labelcolor=TUSZ2)
+    leg.get_frame().set_linewidth(0.8)
+    ax.set_title(tytul, loc="left")
+    zapisz(fig, plik)  # powierzchnie są rastrowane wewnątrz SVG, tekst zostaje wektorowy
+
+
 if __name__ == "__main__":
     rys_wynik_vs_p()
     rys_trojkat()
     rys_izolinie()
     rys_srednia()
+    rys_powierzchnie_3d("pl")
+    rys_powierzchnie_3d("en")
     print("Zapisano rysunki w katalogu", KATALOG)

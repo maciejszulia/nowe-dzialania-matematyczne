@@ -12,6 +12,8 @@ Repozytorium zbiera działania matematyczne, które mają zastosowanie w fizyce 
 
 ![Wynik p-dodawania liczb 3 i 4 w funkcji parametru p](p-dodawanie/img/wynik-vs-p.svg)
 
+![Dla każdej pary a, b > 0 powierzchnia p = 1 leży nad powierzchnią p = 2, a powierzchnia p = −1 leży pod obiema](p-dodawanie/img/powierzchnie-3d.svg)
+
 ## Punkt wyjścia
 
 Każde działanie w ciągu „dodawanie, mnożenie, potęgowanie” jest powtórzeniem działania poprzedniego:
