@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 252" width="960" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" role="img" aria-label="p-dodawanie liczb 3 i 4 dla 6 wartości p. Na gałęzi p &lt; 0 wynik jest mniejszy niż 3, a na gałęzi p &gt; 0 wynik jest większy niż 4. Na każdej gałęzi wynik maleje, gdy p rośnie.">
+<rect width="960" height="252" fill="#ffffff"/>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#111111"/></marker></defs>
+<text x="16" y="32" font-size="15" font-weight="bold" fill="#111111">p-dodawanie liczb 3 i 4 dla 6 wartości p. Na gałęzi p &lt; 0 wynik jest mniejszy niż 3,</text>
+<text x="16" y="53" font-size="15" font-weight="bold" fill="#111111">a na gałęzi p &gt; 0 wynik jest większy niż 4. Na każdej gałęzi wynik maleje, gdy p rośnie.</text>
+<polyline points="309.333,105.5 333.333,105.5" fill="none" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<polyline points="626.667,105.5 650.667,105.5" fill="none" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<polyline points="797.333,139 797.333,154 162.667,154 162.667,169" fill="none" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<polyline points="309.333,202.5 333.333,202.5" fill="none" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<polyline points="626.667,202.5 650.667,202.5" fill="none" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="16" y="72" width="293.333" height="67" fill="#f2f2f2" stroke="#111111" stroke-width="1.5"/>
+<text x="24" y="93" fill="#111111" font-weight="bold">p dąży do minus</text>
+<text x="24" y="110" fill="#111111" font-weight="bold">nieskończoności</text>
+<text x="24" y="127" fill="#111111">wynik: 3 (minimum)</text>
+<rect x="333.333" y="72" width="293.333" height="67" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="341.333" y="93" fill="#111111" font-weight="bold">p = -2</text>
+<text x="341.333" y="110" fill="#111111">wynik: 2,4</text>
+<text x="341.333" y="127" fill="#111111">wysokość na przeciwprostokątną</text>
+<rect x="650.667" y="72" width="293.333" height="67" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="658.667" y="93" fill="#111111" font-weight="bold">p = -1</text>
+<text x="658.667" y="110" fill="#111111">wynik: 1,714</text>
+<text x="658.667" y="127" fill="#111111">3 Ω i 4 Ω połączone równolegle</text>
+<rect x="16" y="169" width="293.333" height="67" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="24" y="190" fill="#111111" font-weight="bold">p = 1</text>
+<text x="24" y="207" fill="#111111">wynik: 7</text>
+<text x="24" y="224" fill="#111111">zwykła suma</text>
+<rect x="333.333" y="169" width="293.333" height="67" fill="#ffffff" stroke="#c8102e" stroke-width="2"/>
+<text x="341.333" y="190" fill="#c8102e" font-weight="bold">p = 2</text>
+<text x="341.333" y="207" fill="#111111">wynik: 5</text>
+<text x="341.333" y="224" fill="#111111">przeciwprostokątna trójkąta 3-4-5</text>
+<rect x="650.667" y="169" width="293.333" height="67" fill="#f2f2f2" stroke="#111111" stroke-width="1.5"/>
+<text x="658.667" y="190" fill="#111111" font-weight="bold">p dąży do plus</text>
+<text x="658.667" y="207" fill="#111111" font-weight="bold">nieskończoności</text>
+<text x="658.667" y="224" fill="#111111">wynik: 4 (maksimum)</text>
+</svg>
